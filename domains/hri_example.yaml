@@ -1,0 +1,8 @@
+host: 156.116.8.195
+
+initial_state: >
+  CREATE (:Floor {status: "free"})
+
+
+#  - "CREATE (:Floor {status: 'free'});"
+    
