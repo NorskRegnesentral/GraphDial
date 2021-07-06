@@ -1,8 +1,49 @@
-host: 156.116.8.195
+db_host: tagtog
+db_port: 7687
+zmq_input_port: 5555
+zmq_output_port: 5556
+
+inputs:
+  - HumanUtterance
+  - HumanEngagement
+outputs:
+  - RobotUtterance
+  - RobotAction
 
 initial_state: >
-  CREATE (:Floor {status: "free"})
+  CREATE (f:Floor {status: 'free'}) ;
 
+update_rules: "
+MATCH (asr:ASRHypothesis) WHERE asr.transcript CONTAINS 'test'
+MERGE (ih:Intent {name:'Testing'})
+CREATE (ih)-[:inferred_from {condprob:0.9}]->(asr);
 
-#  - "CREATE (:Floor {status: 'free'});"
-    
+MATCH (asr:ASRHypothesis) WHERE asr.transcript CONTAINS 'foo'
+MERGE (ih:Intent {name:'FooBar'})
+CREATE (ih)-[:inferred_from {condprob:0.95}]->(asr);
+
+MATCH (asr:ASRHypothesis) WHERE asr.transcript CONTAINS 'hi there'
+MERGE (i:Intent {name:'Greeting'})
+CREATE (i)-[:inferred_from {condprob:0.8}]->(asr);
+
+MATCH (i:Intent),
+(i)-[e:inferred_from]->(asr:ASRHypothesis)
+WITH i, sum(e.condprob * asr.prob) as prob
+SET i.marginal_prob=prob;
+
+MATCH (i:Intent {name:'FooBar'})
+MERGE (ac:CandidateResponse {name:'FooBarBackToYou'})
+CREATE (ac)-[:inferred_from {util:5}]->(i);
+
+MATCH (i:Intent {name:'Greeting'})
+MERGE (ac:CandidateResponse {name:'GreetBack'})
+CREATE (ac)-[:inferred_from {util:3}]->(i);
+
+MATCH (ac:CandidateResponse),
+(ac)-[e:inferred_from]->(i)
+WITH ac, sum(e.util * i.marginal_prob) as util
+SET ac.util=util;
+
+MATCH (ac:CandidateResponse)
+WITH ac ORDER BY ac.util desc limit 1
+CREATE (a:Action)-[:selection]->(ac); "
