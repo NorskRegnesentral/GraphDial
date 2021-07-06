@@ -1,0 +1,315 @@
+version: "2.0"
+nlu:
+- lookup: person
+  examples: |
+    - Alex
+    - Kristoffer
+    - Lars
+    - Lise
+    - Nick
+    - Pierre
+    - Ragnar
+    - Siw
+    - Thordis
+    - Torbjørn
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - good afternoon
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+    - goodevening
+    - good afternoon
+    - how's it going
+    - what's up
+    - yo
+    - howdy
+- intent: goodbye
+  examples: |
+    - good afternoon
+    - see you
+    - see you later
+    - good night
+    - bye
+    - goodbye
+    - have a nice day
+    - have a good one
+    - have a great day
+    - see you around
+    - until next time
+    - see you soon
+    - see you tomorrow
+    - see you next week
+    - adieu
+    - bye bye
+    - Goodbye!
+- intent: affirm
+  examples: |
+    - yes
+    - yeah
+    - yep
+    - indeed
+    - of course
+    - that sounds good
+    - correct
+    - sure
+    - okay
+    - naturally
+    - absolutely
+    - great!
+    - super!
+    - very good
+    - sounds good
+    - for sure
+    - ja
+- intent: deny
+  examples: |
+    - no
+    - never
+    - I don't think so
+    - don't like that
+    - no way
+    - not really
+    - not that
+    - incorrect
+    - that's not right
+    - not what I asked
+    - not what I said
+    - miss me with that
+    - nope
+    - nah
+    - uh, no
+    - negative
+
+
+## Event inquiries ##
+- intent: request_event_location
+  examples: |
+    - Where is the [meeting](event) going to be?
+    - Where is the [meeting](event)?
+    - Can you tell me where the [seminar](event) is?
+    - What is the location of the [summer party](event)?
+    - Where is the meeting at [10:15](time) being held?
+    - Where will the [interview](event) be located?
+    - Where is [Pierre](person)'s [meeting](event)?
+    - Where can I find the [meeting](event) that [Thordis](person) arranged?
+    - Where is [Pierre](person)'s [meeting](event) at [10:00](time)?
+    - Where is [Nick](person)'s [interview](event) at [4:00](time) going to be?
+    - Where will [Anne](person)'s [12:00](time) o'clock [lunch break](event) be?
+    - Tell me where the [SAMBA meeting](event) will be.
+    - Please tell me where I can find the [GraphDial meeting](event).
+    - I'd like to know where the [team meeting](event) will be.
+    - Where will the [SAMBA meeting](event) be?
+    - What [room](location) is the [meeting](event) going to be in?
+    - Where can I find the [onboarding meeting](event)?
+- intent: request_event_time_start
+  examples: |
+    - What time is the [GraphDial meeting](event)?
+    - When is the [seminar](event)?
+    - Please tell me when the [conference](event) starts.
+    - I'd like to know when the [meetup](event) begins.
+    - Can you tell me when the [seminar](event) starts?
+    - Tell me when the [team stand-up](event) is.
+    - What time will the [SAMBA meeting](event) be?
+    - Do you know when the [interview](event) is supposed to start?
+- intent: request_event_time_end
+  examples: |
+    - What time is the end of the [GraphDial meeting](event)?
+    - When is the [seminar](event) over?
+    - When will the [SAMBA meeting](event) finish?
+    - I'd like to know when the [meetup](event) ends.
+    - When does the [interview](event) end?
+    - What time will the [SAMBA meeting](event) end?
+    - What time is the [GraphDial meeting](event) over?
+    - Tell me what time the [group meeting](event) finishes.
+    - When is that [meeting](event) going to be done with?
+    - Can you tell me what time the [lunch break](event) concludes?
+    - When should I expect the [status meeting](event) to be finished?
+    - When will that [meeting](event) be over?
+- intent: request_event_attendees
+  examples: |
+    - Who is going to be at the [meeting](event)?
+    - Who's coming to the [meetup](event)?
+    - Who will be at the [seminar](event)?
+    - List the attendees for the [team meeting](event)?
+    - Tell me who will be coming to the [GraphDial meeting](event).
+    - I'd like to know who's going to be at the [onboarding](event).
+- intent: request_event_number_attendees
+  examples: |
+    - How many people will be at the [quarterly meeting](event)?
+    - Do you know how many people will go to the [barbecue](event)?
+    - How many people are going to the [seminar](event)?
+    - How many people are at the [meetup](event) at [2:00](time)?
+    - Tell me how many people will go to the [party](event).
+    - Please tell me how many people are invited to the [status meeting](event)?
+    - I'd like to know how many people will be at the [birthday party](event).
+    - What's the total number of people at the [team meeting](event) this morning?
+
+- intent: request_event_duration
+  examples: |
+    - How long will the [quarterly meeting](event) last?
+    - How many hours is the [barbecue](event) scheduled for?
+    - What's the length of the [seminar](event)?
+    - Will the [meetup](event) at [2:00](time) last very long?
+    - How long does the [GraphDial](event) meetup go on for?
+    - How many hours is the [interview](event)?
+    - Tell me how long the [seminar](event) is going to be.
+    - I'd like to know how long the [presentation](event) will last.
+
+- intent: request_time_event
+  examples: |
+    - What meeting is scheduled for this morning?
+    - Is there a meeting at [10:00](time)?
+    - What is happening at [1:30](time)?
+    - What meeting does [Pierre](person) have at [2:00](time)?
+    - What is [Nick](person)'s meeting at [10:00](time)?
+    - What is the meeting with [Anders](person) at [11:15](time)?
+    - Tell me what the event with [Nick](person) and [Pierre](person) at [2:30](time) is.
+    - What's going on at [5:00](time)?
+
+## Inquiries about People ##
+- intent: request_person_availability
+  examples: |
+    - Is [Pierre](person) available?
+    - Does [Siw](person) have any meetings now?
+    - Is [Lise](person) busy right now?
+    - Will [Nick](person) be free at [1:30](time)?
+    - Is [Pierre](person) available at [1:30](time)?
+    - Will [Anders](person) be in meetings this afternoon?
+    - Would [Nick](person) be around at [3:30](time)?
+    - Could [Lars](person) come to a meeting at [1:45](time)?
+    - Is [Thordis](person) doing anything at [2:30](time)?
+
+- intent: request_person_location
+  examples: |
+    - Where is [Pierre](person)?
+    - Where is [Anders](person)?
+    - Where is [Thordis](person)?
+    - Where can I find [Nick](person)?
+    - Tell me where [Torbjørn](person) is.
+    - What is the location of [Nick](person)?
+    - What are the present whereabouts of [André](person)?
+    - Do you know where [Anne](person) is?
+    - Where will [Pierre](person) be at [2:00](time)?
+    - At [9:30](time), where can I find [Anders](person)?
+    - What room will [Torbjørn](person) be in at [11:30](time)?
+    - Where can I find [Alex](person) at [1:15](time)?
+- intent: request_person_attendance
+  examples: |
+    - Is [Pierre](person) going to the [SAMBA meeting](event)?
+    - Will [Torbjørn](person) be attending the [GraphDial meeting](event)?
+    - Can you check if [Nick](person) will be at the [morning stand-up](event)?
+    - Is [Thordis](person) supposed to be coming to the [meeting](event)?
+    - Is [Pierre](person) coming to the event at [6:00](time)? 
+    - Is [Anders](person) attending the [seminar](event)?
+    - Will I see [Alex](person) at the [group meeting](event)?
+- intent: request_person_calendar
+  examples: |
+    - What does [Pierre](person) have on his calendar?
+    - How many meetings does [Torbjørn](person) have today?
+    - Can you check if [Nick](person) has anything on his calendar?
+    - See if [Anders](person) has anything on his calendar.
+    - Check if [Thordis](person) has events on her calendar today.
+    - Look up what events are on [André](person)'s calendar.
+    - Check [Anne](person)'s calendar for meetings.
+
+## Location inquiries ##
+- intent: request_location
+  examples: |
+    - Where is the [Sigma conference room](location)?
+    - Could you tell me where the [break room](location) is?
+    - Where can I find the [canteen](location)?
+    - Where is [Pierre](person)'s [office](location)?
+    - Tell me where I can find [André](person)'s [office](location)'
+    - Where is the nearest [conference room](location)?
+- intent: request_location_persons
+  examples: |
+    - Who is in the [conference room](location)?
+    - Are there people in the [canteen](location)?
+    - Who will be at [the office](location) at [10:00](time)?
+    - Tell me who will be in the [conference room](location) at [2:30](time)?
+    - What employees are at [reception](location) right now?
+- intent: request_location_number_persons
+  examples: |
+    - How many people are in the [conference room](location)?
+    - Are there a lot of people in the [canteen](location)?
+    - Will there be many people at [the office](location) at [10:00](time)?
+    - Tell me how many people will be in the [conference room](location) at [2:30](time)?
+    - Is there anyone at the [Omega conference room](location) at [11:30](time)?
+- intent: request_location_availability
+  examples: |
+    - Will there be any events in the [conference room](location) this afternoon?
+    - Is the [conference room](location) available for a meeting at [1:00](time)?
+    - Has the [Alpha conference room](location) been booked at [3:00](time)?
+    - Is the [boardroom](location) taken?
+    - Is the [room](location) occupied?
+    - Are people using the [break room](location) right now?
+    - Will the [conference room](location) be booked at [1:30](time)?
+- intent: request_location+time_events
+  examples: |
+    - What events will be in the [conference room](location) this afternoon?
+    - Is there anything going on in the [canteen](location) at [12:30](time)?
+    - What's happening at the [office](location) at [2:30](time)?
+    - How many events are happening in the [main office](location) at [11:00](time)?
+    - Let me know what events are happening in the [breakroom](location).
+    - Tell me what is happening in the [conference room](location).
+
+## Movement Requests (Commands) ##
+- intent: move_to_location
+  examples: |
+    - Can you go to the [conference room](location)?
+    - Go over to [Pierre's office](location).
+    - Go to [Michael's office](location).
+    - Head to the [break room](location).
+    - Please move to the [hallway](location).
+    - Can you go to the [reception room](location)?
+- intent: move_to_person
+  examples: |
+    - Please go over to [Pierre](person).
+    - Go to [Torbjørn](person).
+    - Go over to [Anne](person).
+    - Please go to [Pierre](person).
+    - I'd like you to go to where [Torbjørn](person) is standing.
+    - Find [Torbjørn](person).
+    - You should move to [Nick](person)'s location.
+    - Can you go over to [Pierre](person) now?
+    - Move to [Anders](person).
+    - Move over to [Nick](person).
+    - Move to where [Thordis](person) is.
+    - Would you be able to head over to the [GraphDial meeting]?
+- intent: move_to_event
+  examples: |
+    - Go to the [GraphDial meeting](event).
+    - Head over to the [lunch break](event).
+    - Move to the [seminar](event).
+    - Go join the [meeting](event).
+    - Can you go to the [meeting](event) now?
+    - Please go to the [lunch meetup](event).
+
+## Other Commands ##
+- intent: call_person
+  examples: |
+    - Please call [Pierre](person).
+    - Could you call [Anders](person)?
+    - Set up a call with [Nick](person).
+    - Call [Lars](person).
+- intent: fetch_person
+  examples: |
+    - Please bring [Pierre](person) here.
+    - Could you fetch [Anders](person)?
+    - Can you find [Torbjørn](person) and bring him here?
+    - Go get [Anne](person) and bring her.
+    - Would you be able to fetch [Thordis](person), please?
+
+## Repeat/Repair Intents ##
+
+
+
+## Grounding Intents ##
