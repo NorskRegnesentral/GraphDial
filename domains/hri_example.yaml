@@ -46,4 +46,84 @@ SET ac.util=util;
 
 MATCH (ac:CandidateResponse)
 WITH ac ORDER BY ac.util desc limit 1
-CREATE (a:Action)-[:selection]->(ac); "
+CREATE (a:Action)-[:selection]->(ac); 
+
+MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
+MATCH (pm)-[:REFERS_TO]->(p:Person {name: %s})<-[:HAS_PARTICIPANT]-(e:Event)
+MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
+WHERE timestamp() < st.time
+OR timestamp() > et.time
+CREATE (cr:CandiateResponse {name: 'InformPersonIsAvailable'})<-[:MENTIONED_IN]-(p)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
+MATCH (pm)-[:REFERS_TO]->(p:Person {name: %s})<-[:HAS_PARTICIPANT]-(e:Event)
+MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
+WHERE timestamp() >= st.time
+AND timestamp() <= et.time
+CREATE (cr:CandiateResponse {name: 'InformPersonIsBusy'})<-[:MENTIONED_IN]-(p)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
+MATCH (pm)-[:REFERS_TO]->(p:Person {name: '%s'})
+OPTIONAL MATCH (e:Event)-[hp:HAS_PARTICIPANT]->(p) WITH e, hp WHERE hp IS NULL
+CREATE (cr:CandiateResponse {name: 'InformPersonIsAvailable'})<-[:MENTIONED_IN]-(p)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
+MATCH (i)<-[:MENTIONED_IN]-(tm:EntityMention {entity: 'time'})
+MATCH (pm)-[:REFERS_TO]->(p:Person {name: '%s'})<-[:HAS_PARTICIPANT]-(e:Event)
+MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
+WHERE tm.value < st.time
+OR tm.value > et.time
+CREATE (cr:CandiateResponse {name: 'InformPersonIsAvailable'})<-[:MENTIONED_IN]-(p)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
+MATCH (i)<-[:MENTIONED_IN]-(tm:EntityMention {entity: 'time'})
+MATCH (pm)-[:REFERS_TO]->(p:Person {name: '%s'})<-[:HAS_PARTICIPANT]-(e:Event)
+MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
+WHERE tm.value >= st.time
+AND tm.value <= et.time
+CREATE (cr:CandiateResponse {name: 'InformPersonIsAvailable'})<-[:MENTIONED_IN]-(p)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_location_availability'})<-[:MENTIONED_IN]-(lm:EntityMention {entity: 'location'})
+MATCH (lm)-[:REFERS_TO]->(l:Location {name: %s})<-[:HAS_LOCATION]-(e:Event)
+MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
+WHERE timestamp() < st.time
+OR timestamp() > et.time
+CREATE (cr:CandiateResponse {name: 'InformLocationIsAvailable'})<-[:MENTIONED_IN]-(l)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_location_availability'})<-[:MENTIONED_IN]-(lm:EntityMention {entity: 'location'})
+MATCH (lm)-[:REFERS_TO]->(l:Location {name: %s})<-[:HAS_LOCATION]-(e:Event)
+MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
+WHERE timestamp() >= st.time
+AND timestamp() <= et.time
+CREATE (cr:CandiateResponse {name: 'InformLocationIsTaken'})<-[:MENTIONED_IN]-(l)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_location_availability'})<-[:MENTIONED_IN]-(lm:EntityMention {entity: 'location'})
+MATCH (lm)-[:REFERS_TO]->(l:Location)
+OPTIONAL MATCH (e:Event)-[hl:HAS_LOCATION]->(l) WITH e, hl WHERE hl IS NULL
+CREATE (cr:CandiateResponse {name: 'InformLocationIsAvailable'})<-[:MENTIONED_IN]-(l)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_location_availability'})<-[:MENTIONED_IN]-(lm:EntityMention {entity: 'location'})
+MATCH (i)<-[:MENTIONED_IN]-(tm:EntityMention {entity: 'time'})
+MATCH (lm)-[:REFERS_TO]->(l:Location {name: %s})<-[:HAS_LOCATION]-(e:Event)
+MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
+WHERE tm.value < st.time
+OR tm.value > et.time
+CREATE (cr:CandiateResponse {name: 'InformLocationIsAvailable'})<-[:MENTIONED_IN]-(l)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_location_availability'})<-[:MENTIONED_IN]-(lm:EntityMention {entity: 'location'})
+MATCH (i)<-[:MENTIONED_IN]-(tm:EntityMention {entity: 'time'})
+MATCH (lm)-[:REFERS_TO]->(l:Location {name: %s})<-[:HAS_LOCATION]-(e:Event)
+MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
+WHERE tm.value >= st.time
+AND tm.value <= et.time
+CREATE (cr:CandiateResponse {name: 'InformLocationIsTaken'})<-[:MENTIONED_IN]-(l)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i); "
