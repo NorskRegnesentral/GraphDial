@@ -21,27 +21,29 @@ SET i.marginal_prob=prob;
 
 MATCH (em: EntityMention)-[r:MENTIONED_IN]->(i: Intent)
 WHERE degree(em) > 2
-MERGE (cr:CandidateResponse {name: 'DisambiguateEntity'})-[:INFERRED_FROM {util: 10}]->(i)
+MERGE (cr:CandidateResponse {name: 'DisambiguateEntity'})-[:INFERRED_FROM {util: 10}]->(i);
 
 MATCH (em: EntityMention)-[r:MENTIONED_IN]->(i: Intent)
 WHERE degree(em) < 2
-MERGE (cr:CandidateResponse {name: 'EntityNotFound'})-[:INFERRED_FROM {util: 10}]->(i)
+MERGE (cr:CandidateResponse {name: 'EntityNotFound'})-[:INFERRED_FROM {util: 10}]->(i);
 
 MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
-MATCH (pm)-[:REFERS_TO]->(p:Person)<-[:HAS_PARTICIPANT]-(e:Event)
-MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE timestamp() < st.time
-OR timestamp() > et.time
-CREATE (cr:CandidateResponse {name: 'InformPersonIsAvailable'})<-[:MENTIONED_IN]-(p)
-CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+MATCH (pm)-[:REFERS_TO]->(p:Person {name: %s})
+OPTIONAL MATCH (p)<-[:HAS_PARTICIPANT]-(e:Event)
+OPTIONAL MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
+WHERE st.time < timestamp() AND timestamp() < et.time
+WITH i, p, count(e) as c1, count(st) as c2
+WHERE c1=0 or c2=0
+MERGE (cr:CandidateResponse {name: 'InformPersonIsAvailable'})-[:ARG_OF]->(p)
+MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
 
 MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
-MATCH (pm)-[:REFERS_TO]->(p:Person)<-[:HAS_PARTICIPANT]-(e:Event)
+MATCH (pm)-[:REFERS_TO]->(p:Person {name: %s})
+MATCH (p)<-[:HAS_PARTICIPANT]-(e:Event)
 MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE timestamp() >= st.time
-AND timestamp() <= et.time
-CREATE (cr:CandidateResponse {name: 'InformPersonIsBusy'})<-[:MENTIONED_IN]-(p)
-CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+WHERE st.time < timestamp() < et.time
+MERGE (cr:CandidateResponse {name: 'InformPersonIsBusy'})-[:ARG_OF]->(p)
+MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i)
 
 MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
 MATCH (pm)-[:REFERS_TO]->(p:Person)
