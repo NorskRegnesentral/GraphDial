@@ -14,39 +14,10 @@ initial_state: >
   CREATE (f:Floor {status: 'free'}) ;
 
 update_rules: "
-MATCH (asr:ASRHypothesis) WHERE asr.transcript CONTAINS 'test'
-MERGE (ih:Intent {name:'Testing'})
-CREATE (ih)-[:inferred_from {condprob:0.9}]->(asr);
-
-MATCH (asr:ASRHypothesis) WHERE asr.transcript CONTAINS 'foo'
-MERGE (ih:Intent {name:'FooBar'})
-CREATE (ih)-[:inferred_from {condprob:0.95}]->(asr);
-
-MATCH (asr:ASRHypothesis) WHERE asr.transcript CONTAINS 'hi there'
-MERGE (i:Intent {name:'Greeting'})
-CREATE (i)-[:inferred_from {condprob:0.8}]->(asr);
-
 MATCH (i:Intent),
 (i)-[e:inferred_from]->(asr:ASRHypothesis)
 WITH i, sum(e.condprob * asr.prob) as prob
 SET i.marginal_prob=prob;
-
-MATCH (i:Intent {name:'FooBar'})
-MERGE (ac:CandidateResponse {name:'FooBarBackToYou'})
-CREATE (ac)-[:inferred_from {util:5}]->(i);
-
-MATCH (i:Intent {name:'Greeting'})
-MERGE (ac:CandidateResponse {name:'GreetBack'})
-CREATE (ac)-[:inferred_from {util:3}]->(i);
-
-MATCH (ac:CandidateResponse),
-(ac)-[e:inferred_from]->(i)
-WITH ac, sum(e.util * i.marginal_prob) as util
-SET ac.util=util;
-
-MATCH (ac:CandidateResponse)
-WITH ac ORDER BY ac.util desc limit 1
-CREATE (a:Action)-[:selection]->(ac);
 
 MATCH (em: EntityMention)-[r:MENTIONED_IN]->(i: Intent)
 WHERE degree(em) > 2
@@ -134,4 +105,13 @@ MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
 WHERE tm.value >= st.time
 AND tm.value <= et.time
 CREATE (cr:CandidateResponse {name: 'InformLocationIsTaken'})<-[:MENTIONED_IN]-(l)
-CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i); "
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i); 
+
+MATCH (ac:CandidateResponse),
+(ac)-[e:inferred_from]->(i)
+WITH ac, sum(e.util * i.marginal_prob) as util
+SET ac.util=util;
+
+MATCH (ac:CandidateResponse)
+WITH ac ORDER BY ac.util desc limit 1
+CREATE (a:Action)-[:selection]->(ac);"
