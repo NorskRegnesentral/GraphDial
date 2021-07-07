@@ -19,6 +19,15 @@ MATCH (i:Intent),
 WITH i, sum(e.condprob * asr.prob) as prob
 SET i.marginal_prob=prob;
 
+MATCH (u:HumanUtterance)-[:alternative]->(h:ASRHypothesis)
+CALL rasa_nlu.run(h.transcript) YIELD intents, entities 
+UNWIND intents as intent
+CREATE (i:Intent {name:intent.name, prob:intent.prob})-[:INFERRED_FROM]->(h)
+WITH entities, h, i
+UNWIND entities as entity
+CREATE (em:EntityMention {name:entity.value, prob:entity.prob, start:entity.start, end:entity.end})-[:INFERRED_FROM]->(h)
+CREATE (i)<-[:MENTIONED_IN]-(em); 
+
 MATCH (em: EntityMention)-[r:MENTIONED_IN]->(i: Intent)
 WHERE degree(em) > 2
 MERGE (cr:CandidateResponse {name: 'DisambiguateEntity'})-[:INFERRED_FROM {util: 10}]->(i);
