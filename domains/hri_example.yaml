@@ -27,6 +27,18 @@ MATCH (em: EntityMention)-[r:MENTIONED_IN]->(i: Intent)
 WHERE degree(em) < 2
 MERGE (cr:CandidateResponse {name: 'EntityNotFound'})-[:INFERRED_FROM {util: 10}]->(i);
 
+MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:PersonMention)
+MATCH (pm)-[:REFERS_TO]->(p:Person {name: '%s'})
+WHERE p.availability = 'free'
+CREATE (cr:CandidateResponse {name: 'InformPersonIsAvailable'})<-[:MENTIONED_IN]-(p)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
+MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:PersonMention)
+MATCH (pm)-[:REFERS_TO]->(p:Person {name: '%s'})
+WHERE p.availability = 'busy'
+CREATE (cr:CandidateResponse {name: 'InformPersonIsAvailable'})<-[:MENTIONED_IN]-(p)
+CREATE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+
 MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
 MATCH (pm)-[:REFERS_TO]->(p:Person {name: %s})
 OPTIONAL MATCH (p)<-[:HAS_PARTICIPANT]-(e:Event)
