@@ -76,10 +76,3 @@ def default_converter(mess_dict: Dict[str,Any]) -> List[str]:
                        for k, v in mess_dict.items() if k != "label"))
     cypher_query = "CREATE {n:%%s {%s} ;"%(mess_dict["type"], props)    
     return [cypher_query]
-  
-  
-if __name__ == "__main__":
-    args = sys.argv
-    if len(args) < 2:
-        raise RuntimeError("Must specify domain config file")
-    DialogueSystem(args[1])
