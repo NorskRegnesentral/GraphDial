@@ -61,7 +61,7 @@ def convert_asr_results(mess_dict: Dict[str,Any]) -> List[str]:
     for hypo in mess_dict["hypotheses"]:#ast.literal_eval(mess_dict["hypotheses"]):
         if (not mess_dict["isFinal"]): hypo["confidence"] = 0.7
         if (mess_dict["isFinal"]): mess_dict["stability"] = 0.7
-        properties = f"{{transcript:'{hypo['transcript']}', prob:{hypo['confidence']}, stability:{mess_dict['stability']}}}"
+        properties = f"{{transcript:\"{hypo['transcript']}\", prob:{hypo['confidence']}, stability:{mess_dict['stability']}}}"
 
         queries.append(f"MATCH (u:HumanUtterance {{id:{mess_dict['id']}}}) "
                        + f"CREATE (r_new:ASRHypothesis {properties})<-[:alternative]-(u) ;")
