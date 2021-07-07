@@ -52,7 +52,7 @@ MATCH (p)<-[:HAS_PARTICIPANT]-(e:Event)
 MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
 WHERE st.time < timestamp() < et.time
 MERGE (cr:CandidateResponse {name: 'InformPersonIsBusy'})-[:ARG_OF]->(p)
-MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i)
+MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
 
 MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
 MATCH (i)<-[:MENTIONED_IN]-(tm:TimeMention)
