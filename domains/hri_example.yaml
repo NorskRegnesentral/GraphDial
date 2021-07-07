@@ -29,7 +29,7 @@ CREATE (em:EntityMention {name:entity.value, prob:entity.prob, start:entity.star
 CREATE (i)<-[:MENTIONED_IN]-(em); 
 
 MATCH (i:Intent {name: 'greet'})
-MERGE (r:RobotUtterance {name: 'Hello, my name is Pepper!'})<-[:INFERRED_FROM {util: 5}]-(i);
+MERGE (r:RobotUtterance {transcript: 'Hello, my name is Pepper!'})<-[:INFERRED_FROM {util: 5}]-(i);
 
 MATCH (em: EntityMention)-[r:MENTIONED_IN]->(i: Intent)
 WHERE degree(em) > 2
