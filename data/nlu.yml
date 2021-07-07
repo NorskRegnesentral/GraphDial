@@ -2,16 +2,135 @@ version: "2.0"
 nlu:
 - lookup: person
   examples: |
+    - Alba
+    - Alba Ordonez
     - Alex
+    - Alex Lenkoski
+    - Amund
+    - Amund Vedal
+    - Anders
+    - Anders Løland
+    - Anders Ueland Waldetoft
+    - André
+    - André Teigland
+    - Annabelle
+    - Annabelle Redelmeier
+    - Anne
+    - Anne Spangen
+    - Ariel
+    - Ariel Almendral Vasquez
+    - Arnt-Børre
+    - Arnt-Børre Salberg
+    - Arnstein
+    - Arnstein Kvilhaug
+    - Carl-Inge
+    - Carl-Inge Colombo Nielsen
+    - Clara-Cecilia
+    - Clara-Cecilia Günther
+    - Claudio
+    - Claudio Heinrich
+    - Daniel
+    - Daniel Martin Lewis Barker
+    - Erik
+    - Erik Vasaasen
+    - Eyvind
+    - Eyvind Aker
+    - Feiyang
+    - Feiyang Tang
+    - Fredrik
+    - Fredrik Andreas Dahl
+    - Fredrik Lohne Aanes
+    - Habtamu
+    - Habtamu Abie
+    - Håvard
+    - Håvard Goodwin
+    - Ingrid
+    - Ingrid Aarnes
+    - Ingvar
+    - Ingvar Tjøstheim
+    - Ivar
+    - Ivar Rummelhoff
+    - Izzie
+    - Izzie Yi Liu
+    - Jacob
+    - Jacob Skauvold
+    - Jens
+    - Jens Christian Wahl
+    - Kjersti
+    - Kjersti Aas
     - Kristoffer
+    - Kristoffer Hellton
+    - Kristoffer Herland Hellton
     - Lars
+    - Lars Holden
+    - Lillian
+    - Lillian Løseth Frydenlund
+    - Linda
+    - Line
+    - Line Eikvil
     - Lise
+    - Lise Lundberg
+    - Magne
+    - Magne Aldrin
+    - Marion
+    - Marion Haugen
+    - Martin
+    - Martin Tveten
+    - Michael
+    - Michael Scheuerer
     - Nick
+    - Nick Walker
+    - Ola
+    - Ola Haug
+    - Per Arne
+    - Per Arne Madsen
+    - Petter
+    - Petter Abrahamson
     - Pierre
+    - Pierre Lison
     - Ragnar
+    - Rune Solberg
+    - Sigurd
     - Siw
+    - Siw Treider
+    - Svetlana
+    - Svetlana Boudko
+    - Thor
+    - Thor Kristoffersen
     - Thordis
+    - Thordis Thorarinsdottir
     - Torbjørn
+    - Torbjørn Dahl
+    - Trenton
+    - Trenton Schultz
+    - Unni
+    - Unni Adele
+    - Unni Adele Raste
+    - Wolfgang
+    - Wolfgang Leiste
+    - Øivind
+    - Øivind Due Trier
+- lookup: event
+  examples: |
+    - status meeting
+    - meeting
+    - sommeravslutning
+    - status update
+    - morgenmøte
+    - morgenkaffe
+    - MH status
+    - lunsj
+    - lunch
+    - coffee break
+    - tea break
+    - internal status meeting
+    - update call
+    - C-hub seminar
+    - WP monthly meeting
+    - HBR sync-up
+    - ARES status
+    - Climate Futures virtual meeting
+
 - intent: greet
   examples: |
     - hey
@@ -309,7 +428,13 @@ nlu:
     - Would you be able to fetch [Thordis](person), please?
 
 ## Repeat/Repair Intents ##
-
-
-
-## Grounding Intents ##
+- intent: request_repeat
+  examples: |
+    - Could you repeat that?
+    - Say that again, please
+    - What was that again?
+    - What did you say?
+    - Come again?
+    - Pardon?
+    - I didn't quite catch that.
+    
