@@ -8,7 +8,7 @@ This repo contains work in progress and currently has only a few example intents
 
 `/domains/hri_example.yaml` mainly specifies the Cypher query update rules as well as ip addresses for input and output to the dialog manager server.
 
-`/notebooks` contains two Jupyter notebooks. 
+`/notebooks/step_by_step_graph_updates_code.ipynb` contains a Jupyter notebook showing the step by step execution of Cypher queries associated with Figure 2 in the paper.
 
 `/opendial2` contains the source code for the dialog manager. 
 
