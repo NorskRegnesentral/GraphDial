@@ -4,4 +4,11 @@ OpenDial 2 is a versatile software framework to develop (text or speech-based) d
 
 OpenDial 2 relies on *probabilistic graphs* to represent the dialogue state. Dialogue state tracking and action selection are consequently viewed as *graph operations*.  Such graph operations are encoded using the [Cypher](https://docs.memgraph.com/cypher-manual) open graph query language.
 
-More details soon!
+This repo contains work in progress and currently has only a few example intents working.
+
+`/domains/hri_example.yaml` mainly specifies the Cypher query update rules as well as ip addresses for input and output to the dialog manager server.
+
+`/notebooks` contains two Jupyter notebooks. 
+
+`/opendial2` contains the source code for the dialog manager. 
+
