@@ -2,114 +2,22 @@ version: "2.0"
 nlu:
 - lookup: person
   examples: |
-    - Alba
-    - Alba Ordonez
     - Alex
-    - Alex Lenkoski
-    - Amund
-    - Amund Vedal
+    - Alex Walker
     - Anders
-    - Anders Løland
-    - Anders Ueland Waldeland
-    - André
-    - André Teigland
-    - Annabelle
-    - Annabelle Redelmeier
+    - Anders Eriksen
     - Anne
-    - Anne Spangen
-    - Ariel
-    - Ariel Almendral Vasquez
-    - Arnt-Børre
-    - Arnt-Børre Salberg
-    - Arnstein
-    - Arnstein Kvilhaug
-    - Carl-Inge
-    - Carl-Inge Colombo Nielsen
-    - Clara-Cecilia
-    - Clara-Cecilia Günther
-    - Claudio
-    - Claudio Heinrich
-    - Daniel
-    - Daniel Martin Lewis Barker
-    - Erik
-    - Erik Vasaasen
-    - Eyvind
-    - Eyvind Aker
-    - Feiyang
-    - Feiyang Tang
-    - Fredrik
-    - Fredrik Andreas Dahl
-    - Fredrik Lohne Aanes
-    - Habtamu
-    - Habtamu Abie
-    - Håvard
-    - Håvard Goodwin
-    - Ingrid
-    - Ingrid Aarnes
-    - Ingvar
-    - Ingvar Tjøstheim
-    - Ivar
-    - Ivar Rummelhoff
-    - Izzie
-    - Izzie Yi Liu
-    - Jacob
-    - Jacob Skauvold
-    - Jens
-    - Jens Christian Wahl
-    - Kjersti
-    - Kjersti Aas
-    - Kristoffer
-    - Kristoffer Hellton
-    - Kristoffer Herland Hellton
-    - Lars
-    - Lars Holden
-    - Lillian
-    - Lillian Løseth Frydenlund
-    - Linda
-    - Line
-    - Line Eikvil
-    - Lise
-    - Lise Lundberg
-    - Magne
-    - Magne Aldrin
-    - Marion
-    - Marion Haugen
-    - Martin
-    - Martin Tveten
-    - Michael
-    - Michael Scheuerer
-    - Nick
-    - Nick Walker
+    - Anne Smith
+    - Jane
+    - Jane Goodall
+    - John
+    - John Williams
     - Ola
-    - Ola Haug
-    - Per Arne
-    - Per Arne Madsen
-    - Petter
-    - Petter Abrahamson
-    - Pierre
-    - Pierre Lison
-    - Ragnar
-    - Rune Solberg
-    - Sigurd
-    - Siw
-    - Siw Treider
-    - Svetlana
-    - Svetlana Boudko
-    - Thor
-    - Thor Kristoffersen
-    - Thordis
-    - Thordis Thorarinsdottir
-    - Torbjørn
-    - Torbjørn Dahl
-    - Trenton
-    - Trenton Schultz
-    - Unni
-    - Unni Adele
-    - Unni Adele Raste
-    - Wolfgang
-    - Wolfgang Leiste
-    - Øivind
-    - Øivind Due Trier
+    - Ola Nordmann
+    - Sam 
+    - Sam Johnson
+    - William
+    - William Sherman
 - lookup: event
   examples: |
     - status meeting
@@ -143,13 +51,9 @@ nlu:
     - hey there
     - let's go
     - hey dude
-    - goodmorning
-    - goodevening
     - good afternoon
     - how's it going
     - what's up
-    - yo
-    - howdy
 - intent: goodbye
   examples: |
     - good afternoon
@@ -166,7 +70,6 @@ nlu:
     - see you soon
     - see you tomorrow
     - see you next week
-    - adieu
     - bye bye
     - Goodbye!
 - intent: affirm
@@ -187,7 +90,6 @@ nlu:
     - very good
     - sounds good
     - for sure
-    - ja
 - intent: deny
   examples: |
     - no
@@ -201,12 +103,9 @@ nlu:
     - that's not right
     - not what I asked
     - not what I said
-    - miss me with that
     - nope
     - nah
-    - uh, no
     - negative
-
 
 ## Event inquiries ##
 - intent: request_event_location
