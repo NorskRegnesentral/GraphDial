@@ -14,112 +14,111 @@ initial_state: >
   CREATE (f:Floor {status: 'free'}) ;
 
 update_rules: "
-MATCH (i:Intent),
-(i)-[e:inferred_from]->(asr:ASRHypothesis)
+MATCH (i:Intent), (i)-[e:INFERRED_FROM]->(asr:ASRHypothesis)
 WITH i, sum(e.condprob * asr.prob) as prob
 SET i.marginal_prob=prob;
 
-MATCH (u:HumanUtterance)-[:alternative]->(h:ASRHypothesis)
-CALL rasa_nlu.run(h.transcript) YIELD intents, entities 
-UNWIND intents as intent
-CREATE (i:Intent {name:intent.name, prob:intent.prob})-[:INFERRED_FROM]->(h)
-WITH entities, h, i
-UNWIND entities as entity
-CREATE (em:EntityMention {name:entity.value, prob:entity.prob, start:entity.start, end:entity.end})-[:INFERRED_FROM]->(h)
-CREATE (i)<-[:MENTIONED_IN]-(em); 
-
 MATCH (i:Intent {name: 'greet'})
-MERGE (r:RobotUtterance {transcript: 'Hello, my name is Pepper!'})<-[:INFERRED_FROM {util: 5}]-(i);
+MERGE (r:RobotUtterance {transcript: 'Hello, human!'})<-[:INFERRED_FROM {util: 5}]-(i);
 
-MATCH (em: EntityMention)-[r:MENTIONED_IN]->(i: Intent)
-WHERE degree(em) > 2
-MERGE (cr:CandidateResponse {name: 'DisambiguateEntity'})-[:INFERRED_FROM {util: 10}]->(i);
+MATCH (u:HumanUtterance)-[:ALTERNATIVE]->(h:ASRHypothesis)
+CALL rasa_nlu.run(h.transcript) YIELD intents, entities
+UNWIND intents as intent
+MERGE (i:Intent {name:intent.name, prob:intent.prob})-[:INFERRED_FROM]->(h)
+WITH entities, h, i, size(entities) > 0 as len
+UNWIND CASE len WHEN TRUE THEN entities ELSE [{entity: 'dummy', value: 'dummy', prob: 0, start: 'No', end: 'No'}] END as entity
+MERGE (em:EntityMention {entity:entity.entity, value:entity.value, prob:entity.prob, start:entity.start, end:entity.end})-[:INFERRED_FROM]->(h);
 
-MATCH (em: EntityMention)-[r:MENTIONED_IN]->(i: Intent)
-WHERE degree(em) < 2
-MERGE (cr:CandidateResponse {name: 'EntityNotFound'})-[:INFERRED_FROM {util: 10}]->(i);
+MATCH (em:EntityMention {entity: 'person'}), (p:Person)
+WHERE toLower(p.name) CONTAINS toLower(em.value)
+MERGE (em)<-[:INFERRED_FROM]-(p);
 
-MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
-MATCH (pm)-[:REFERS_TO]->(p:Person {name: pm.value})
-OPTIONAL MATCH (p)<-[:HAS_PARTICIPANT]-(e:Event)
-OPTIONAL MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE st.time < timestamp() AND timestamp() < et.time
-WITH i, p, count(e) as c1, count(st) as c2
-WHERE c1=0 or c2=0
-MERGE (cr:CandidateResponse {name: 'InformPersonIsAvailable'})-[:ARG_OF]->(p)
-MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+MATCH (em:EntityMention {entity: 'location'}), (l:Location)
+WHERE toLower(l.name) CONTAINS toLower(em.value)
+MERGE (em)<-[:INFERRED_FROM]-(l);
 
-MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
-MATCH (pm)-[:REFERS_TO]->(p:Person {name: pm.value})
-MATCH (p)<-[:HAS_PARTICIPANT]-(e:Event)
-MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE st.time < timestamp() < et.time
-MERGE (cr:CandidateResponse {name: 'InformPersonIsBusy'})-[:ARG_OF]->(p)
-MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+MATCH (em:EntityMention {entity: 'event'}), (e:Event)
+WHERE toLower(e.name) CONTAINS toLower(em.value)
+MERGE (em)<-[:INFERRED_FROM]-(e);
 
-MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
-MATCH (i)<-[:MENTIONED_IN]-(tm:TimeMention)
-MATCH (pm)-[:REFERS_TO]->(p:Person {name: pm.value})
-OPTIONAL MATCH (p)<-[:HAS_PARTICIPANT]-(e:Event)
-OPTIONAL MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE st.time < tm.value < et.time
-WITH i, p, count(e) as c1, count(st) as c2
-WHERE c1=0 or c2=0
-MERGE (cr:CandidateResponse {name: 'InformPersonIsAvailable'})-[:ARG_OF]->(p)
-MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+MATCH (em:EntityMention {entity: 'time'}), (t:Time)
+WHERE t.time CONTAINS em.value
+MERGE (em)<-[:INFERRED_FROM]-(t);
 
-MATCH (i:Intent {name: 'request_person_availability'})<-[:MENTIONED_IN]-(pm:EntityMention {entity: 'person'})
-MATCH (i)<-[:MENTIONED_IN]-(tm:TimeMention)
-MATCH (pm)-[:REFERS_TO]->(p:Person {name: pm.value})
-MATCH (p)<-[:HAS_PARTICIPANT]-(e:Event)
-MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE st.time < tm.value < et.time
-MERGE (cr:CandidateResponse {name: 'InformPersonIsBusy'})-[:ARG_OF]->(p)
-MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+MATCH (em:EntityMention)<-[:INFERRED_FROM]-(p:Person)
+MATCH (ah:ASRHypothesis)<-[:INFERRED_FROM]-(em)<-[:INFERRED_FROM]-(p)
+MATCH (i:Intent {name: 'request_person_availability'})-[:INFERRED_FROM]->(ah)
+MATCH (p)-[:LOCATED_IN]->(l:Location)
+MERGE (r:Response {name: 'inform_person_availability'})-[:ANSWERS_TO]->(i)
+MERGE (r)<-[:ARG_OF]-(l)
+MERGE (r)<-[:ARG_OF]-(p);
 
-MATCH (i:Intent {name: 'request_location_availability'})<-[:MENTIONED_IN]-(lm:LocationMention {entity: 'location'})
-MATCH (lm)-[:REFERS_TO]->(l:Location {name: lm.value})
-OPTIONAL MATCH (l)<-[:HAS_LOCATION]-(e:Event)
-OPTIONAL MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE st.time < timestamp() AND timestamp() < et.time
-WITH i, l, count(e) as c1, count(st) as c2
-WHERE c1=0 or c2=0
-MERGE (cr:CandidateResponse {name: 'InformLocationIsAvailable'})-[:ARG_OF]->(l)
-MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+MATCH (r:Response {name: 'inform_person_availability'})-[:ANSWERS_TO]->(:Intent {name: 'request_person_availability'})
+MATCH (r)<-[:ARG_OF]-(l:Location)
+MATCH (r)<-[:ARG_OF]-(p:Person)
+MERGE (ru:RobotUtterance {transcript: p.name + ' is at ' + l.name})
+MERGE (ru)<-[:ARG_OF]-(p)
+MERGE (ru)<-[:ARG_OF]-(l)
+MERGE (ru)-[:SURFACE_REALISATION]->(r);
 
-MATCH (i:Intent {name: 'request_location_availability'})<-[:MENTIONED_IN]-(lm:LocationMention {entity: 'location'})
-MATCH (lm)-[:REFERS_TO]->(l:Location {name: lm.value})
-MATCH (l)<-[:HAS_LOCATION]-(e:Event)
-MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE st.time < timestamp() < et.time
-MERGE (cr:CandidateResponse {name: 'InformLocationIsTaken'})-[:ARG_OF]->(p)
-MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+MATCH (em:EntityMention)<-[:INFERRED_FROM]-(p:Person)
+MATCH (ah:ASRHypothesis)<-[:INFERRED_FROM]-(em)<-[:INFERRED_FROM]-(p)
+MATCH (i:Intent {name: 'request_person_location'})-[:INFERRED_FROM]->(ah)
+MATCH (p)-[:LOCATED_IN]->(l:Location)
+MERGE (r:Response {name: 'inform_person_location'})-[:ANSWERS_TO]->(i)
+MERGE (r)<-[:ARG_OF]-(l)
+MERGE (r)<-[:ARG_OF]-(p);
 
-MATCH (i:Intent {name: 'request_location_availability'})<-[:MENTIONED_IN]-(lm:LocationMention {entity: 'location'})
-MATCH (i)<-[:MENTIONED_IN]-(tm:TimeMention)
-MATCH (lm)-[:REFERS_TO]->(l:Location {name: lm.value})
-OPTIONAL MATCH (l)<-[:HAS_LOCATION]-(e:Event)
-OPTIONAL MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE st.time < tm.value < et.time
-WITH i, l, count(e) as c1, count(st) as c2
-WHERE c1=0 or c2=0
-MERGE (cr:CandidateResponse {name: 'InformLocationIsAvailable'})-[:ARG_OF]->(l)
-MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+MATCH (r:Response {name: 'inform_person_location'})-[:ANSWERS_TO]->(:Intent {name: 'request_person_location'})
+MATCH (r)<-[:ARG_OF]-(l:Location)
+MATCH (r)<-[:ARG_OF]-(p:Person)
+MERGE (ru:RobotUtterance {transcript: p.name + ' is at ' + l.name})
+MERGE (ru)<-[:ARG_OF]-(p)
+MERGE (ru)<-[:ARG_OF]-(l)
+MERGE (ru)-[:SURFACE_REALISATION]->(r);
 
-MATCH (i:Intent {name: 'request_location_availability'})<-[:MENTIONED_IN]-(lm:LocationMention {entity: 'location'})
-MATCH (i)<-[:MENTIONED_IN]-(tm:TimeMention)
-MATCH (lm)-[:REFERS_TO]->(l:Location {name: lm.value})
-MATCH (l)<-[:HAS_LOCATION]-(e:Event)
-MATCH (st:Time)<-[:STARTS_AT]-(e)-[:ENDS_AT]->(et:Time)
-WHERE st.time < tm.value < et.time
-MERGE (cr:CandidateResponse {name: 'InformLocationIsTaken'})-[:ARG_OF]->(l)
-MERGE (cr)-[:INFERRED_FROM {util: 1}]->(i);
+MATCH (em:EntityMention)<-[if3:INFERRED_FROM]-(e:Event)
+MATCH (i:Intent {name: 'request_event_location'})-[:INFERRED_FROM]->(ah:ASRHypothesis)
+MATCH (ah)<-[:INFERRED_FROM]-(em)
+OPTIONAL MATCH (em:EntityMention)<-[if:INFERRED_FROM]-(t:Time)
+OPTIONAL MATCH (em:EntityMention)<-[if2:INFERRED_FROM]-(p:Person)
+with count(if) as c1, count(if2) as c2, count(e) as c3, i
+where c1 = 0 and c2 = 0 and c3 = 1
+MERGE (r:Response {name: 'inform_event_location'})-[:ANSWERS_TO]->(i)
+MERGE (r)<-[ao:ARG_OF]-(e);
 
-MATCH (ac:CandidateResponse),
-(ac)-[e:inferred_from]->(i)
-WITH ac, sum(e.util * i.marginal_prob) as util
-SET ac.util=util;
+MATCH (em:EntityMention)<-[:INFERRED_FROM]-(e:Event)
+MATCH (pm:EntityMention {entity: 'person'})<-[:INFERRED_FROM]-(p:Person)
+MATCH (i:Intent {name: 'request_event_location'})-[:INFERRED_FROM]->(ah:ASRHypothesis)
+MATCH (ah)<-[:INFERRED_FROM]-(em)
+MATCH (ah)<-[:INFERRED_FROM]-(pm)
+OPTIONAL MATCH (em:EntityMention)<-[if:INFERRED_FROM]-(t:Time)
+with count(if) as c1, i, e, count(e) as c2
+where c1 = 0 and c2 = 1
+MERGE (r:Response {name: 'inform_event_location'})-[:ANSWERS_TO]->(i)
+MERGE (r)<-[ao:ARG_OF]-(e);
 
-MATCH (ac:CandidateResponse)
-WITH ac ORDER BY ac.util desc limit 1
-CREATE (a:Action)-[:selection]->(ac);"
+MATCH (r:Response {name: 'inform_event_location'})-[:ANSWERS_TO]->(i:Intent {name: 'request_event_location'})
+MATCH (r)<-[:ARG_OF]-(e:Event)-[:HAS_LOCATION]->(l:Location)
+with count(r) as c1, e, l, r
+where c1 = 1
+MERGE (ru:RobotUtterance {transcript: e.name + ' is at ' + l.name})
+MERGE (ru)<-[:ARG_OF]-(e)
+MERGE (ru)<-[:ARG_OF]-(l)
+MERGE (ru)-[:SURFACE_REALISATION]->(r);
+
+MATCH (em:EntityMention)<-[:INFERRED_FROM]-(p:Person)
+MATCH (ah:ASRHypothesis)<-[:INFERRED_FROM]-(em)<-[:INFERRED_FROM]-(p)
+MATCH (i:Intent {name: 'move_to_person'})-[:INFERRED_FROM]->(ah)
+MERGE (r:Response {name: 'move_to_person'})-[:ANSWERS_TO]->(i)
+MERGE (r)<-[:ARG_OF]-(p);
+
+MATCH (r:Response {name: 'move_to_person'})-[:ANSWERS_TO]->(:Intent {name: 'move_to_person'})
+MATCH (r)<-[:ARG_OF]-(p:Person)
+MERGE (ru:RobotUtterance {transcript: 'Let me take you there'})
+MERGE (ra:RobotAction {move: p.name})
+MERGE (ru)<-[:ARG_OF]-(p)
+MERGE (ru)-[:SURFACE_REALISATION]->(r)
+MERGE (ra)<-[:ARG_OF]-(p)
+MERGE (ra)-[:SURFACE_REALISATION]->(r);
+"
