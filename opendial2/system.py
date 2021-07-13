@@ -55,7 +55,7 @@ def convert_asr_results(mess_dict: Dict[str,Any]) -> List[str]:
     queries = [ f"MERGE (u:HumanUtterance {{id:{mess_dict['id']}}}) "
                + f"SET u.start={mess_dict['start']}, u.end={mess_dict['end']};",
 
-               f"MATCH (u:HumanUtterance {{id:{mess_dict['id']}}})-[:alternative]->(r_old:ASRHypothesis) "
+               f"MATCH (u:HumanUtterance {{id:{mess_dict['id']}}})-[:ALTERNATIVE]->(r_old:ASRHypothesis) "
                + "DETACH DELETE r_old ;"]
 
     for hypo in ast.literal_eval(mess_dict["hypotheses"]):
@@ -64,7 +64,7 @@ def convert_asr_results(mess_dict: Dict[str,Any]) -> List[str]:
         properties = f"{{transcript:\"{hypo['transcript']}\", prob:{hypo['confidence']}, stability:{mess_dict['stability']}}}"
 
         queries.append(f"MATCH (u:HumanUtterance {{id:{mess_dict['id']}}}) "
-                       + f"CREATE (r_new:ASRHypothesis {properties})<-[:alternative]-(u) ;")
+                       + f"CREATE (r_new:ASRHypothesis {properties})<-[:ALTERNATIVE]-(u) ;")
 
     floor_status = "free" if mess_dict.get("isFinal", False) else "busy"
     queries.append(f"MERGE (f:Floor) SET f.status='{floor_status}';")
