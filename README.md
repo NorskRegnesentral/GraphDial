@@ -10,13 +10,13 @@ This repo contains work in progress and currently has only a few example intents
 
 `/data/nlu.yml` contains NLU examples/lookup.
 
-To train the NLU model, first install [Rasa](https://rasa.com/docs/rasa/installation). You can then use the `rasa train nlu` command to train a new model which will be saved to the `models` folder. This only requires that you define the training data in the yml file. See the [Rasa documentation](https://rasa.com/docs/rasa/nlu-training-data) for more information about the NLU training data format.
+To train the NLU model, first install [Rasa](https://rasa.com/docs/rasa/installation). You can then use the `rasa train nlu` command to train a new model which will be saved to the `/models` folder. This only requires that you define the training data in the yml file. See the [Rasa documentation](https://rasa.com/docs/rasa/nlu-training-data) for more information about the NLU training data format.
 
 `/domains/hri_example.yaml` mainly specifies the Cypher query update rules as well as ip addresses for input and output to the dialog manager server.
 
 `/graphdial` contains the source code for the dialog manager. 
 
-`/models` contains a Rasa NLU models folder with a trained model.
+`/models` contains a trained Rasa NLU model and stores any new trained models.
 
 `/notebooks` contains three Jupyter notebooks. `step_by_step_graph_updates_code.ipynb` shows the step by step execution of Cypher queries associated with Figure 2 in the paper. `graphdial_test_send.ipynb` and `graphdial_test_receive.ipynb` shows example code on how to send and receive requests from the dialog system. See the notebook for a concrete example of the format of the requests.
 
