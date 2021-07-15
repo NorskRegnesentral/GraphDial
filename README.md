@@ -12,9 +12,11 @@ This repo contains work in progress and currently has only a few example intents
 
 `/models` contains a Rasa NLU models folder with a trained model.
 
-`/notebooks/step_by_step_graph_updates_code.ipynb` contains a Jupyter notebook showing the step by step execution of Cypher queries associated with Figure 2 in the paper.
+`/notebooks` contains three Jupyter notebooks. `step_by_step_graph_updates_code.ipynb` shows the step by step execution of Cypher queries associated with Figure 2 in the paper. `graphdial_test_send.ipynb` and `graphdial_test_receive.ipynb` shows example code on how to send and receive requests from the dialog system. The requests should be in the following format: `{"id": <integer id>, "start": <unix time>, "end": <unix time>, "label":"HumanUtterance", "isFinal": <boolean>, "hypotheses": "[{\'transcript\':\'<Your request in string format here>\', \'confidence\': <float>}'`. See the notebook for a concrete example.
 
 `/opendial2` contains the source code for the dialog manager. 
+
+
 
 Before running the dialog system, an instance of Memgraph needs to be running. Follow the instructions on [https://memgraph.com/download](https://memgraph.com/download) to set it up. To run Memgraph on docker, simply use the following commands:
 
