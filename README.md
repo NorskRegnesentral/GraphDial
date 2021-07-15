@@ -24,7 +24,9 @@ Before running the dialog system, an instance of Memgraph needs to be running. F
 
 `docker run -p 7687:7687 -v mg_lib:/var/lib/memgraph -v mg_log:/var/log/memgraph -v mg_etc:/etc/memgraph memgraph`
 
-The dialog system can then be run by executing `python -m graphdial ./domains/hri_example.yaml` inside the root folder `/GraphDial`. 
+The dialog system can then be run by executing 
+```python -m graphdial ./domains/hri_example.yaml``` 
+inside the root folder `/GraphDial`. 
 
 
 
