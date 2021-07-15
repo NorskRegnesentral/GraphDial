@@ -16,3 +16,13 @@ This repo contains work in progress and currently has only a few example intents
 
 `/opendial2` contains the source code for the dialog manager. 
 
+Before running the dialog system, an instance of Memgraph needs to be running. Follow the instructions on [https://memgraph.com/download](https://memgraph.com/download) to set it up. To run Memgraph on docker, simply use the following commands:
+
+`docker load -i memgraph-1.5.0-community-docker.tar.gz`
+
+`docker run -p 7687:7687 -v mg_lib:/var/lib/memgraph -v mg_log:/var/log/memgraph -v mg_etc:/etc/memgraph memgraph`
+
+The dialog system can then be run by executing `python -m graphdial ./domains/hri_example.yaml` inside the root folder `/GraphDial`. 
+
+
+
