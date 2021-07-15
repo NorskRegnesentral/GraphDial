@@ -12,7 +12,7 @@ This repo contains work in progress and currently has only a few example intents
 
 `/models` contains a Rasa NLU models folder with a trained model.
 
-`/notebooks` contains three Jupyter notebooks. `step_by_step_graph_updates_code.ipynb` shows the step by step execution of Cypher queries associated with Figure 2 in the paper. `graphdial_test_send.ipynb` and `graphdial_test_receive.ipynb` shows example code on how to send and receive requests from the dialog system. The requests should be in the following format: `{"id": <integer id>, "start": <unix time>, "end": <unix time>, "label":"HumanUtterance", "isFinal": <boolean>, "hypotheses": "[{\'transcript\':\'<Your request in string format here>\', \'confidence\': <float>}'`. See the notebook for a concrete example.
+`/notebooks` contains three Jupyter notebooks. `step_by_step_graph_updates_code.ipynb` shows the step by step execution of Cypher queries associated with Figure 2 in the paper. `graphdial_test_send.ipynb` and `graphdial_test_receive.ipynb` shows example code on how to send and receive requests from the dialog system. See the notebook for a concrete example of the format of the requests.
 
 `/opendial2` contains the source code for the dialog manager. 
 
