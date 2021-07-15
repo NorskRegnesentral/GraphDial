@@ -10,6 +10,8 @@ This repo contains work in progress and currently has only a few example intents
 
 `/data/nlu.yml` contains NLU examples/lookup.
 
+To train the NLU model, first install [Rasa](https://rasa.com/docs/rasa/installation). You can then use the `rasa train nlu` command to train a new model which will be saved to the `models` folder. This only requires that you define the training data in the yml file. See the [Rasa documentation](https://rasa.com/docs/rasa/nlu-training-data) for more information about the NLU training data format.
+
 `/domains/hri_example.yaml` mainly specifies the Cypher query update rules as well as ip addresses for input and output to the dialog manager server.
 
 `/graphdial` contains the source code for the dialog manager. 
