@@ -4,6 +4,8 @@ GraphDial is a versatile software framework to develop (text or speech-based) di
 
 GraphDial relies on *graphs* to represent the dialogue state. Dialogue state tracking and action selection are consequently viewed as *graph operations*.  Such graph operations are encoded using the [Cypher](https://docs.memgraph.com/cypher-manual) open graph query language.
 
+---
+
 This repo contains work in progress and currently has only a few example intents working.
 
 `/data/nlu.yml` contains NLU examples/lookup.
