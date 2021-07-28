@@ -25,7 +25,7 @@ To train the NLU model, first install [Rasa](https://rasa.com/docs/rasa/installa
 Before running the dialog system, an instance of Memgraph needs to be running. Follow the instructions on [https://memgraph.com/download](https://memgraph.com/download) to set it up. To run Memgraph on Docker, simply use the following commands:
 
 ```
-docker load -i memgraph-1.*.*-community-docker.tar.gz
+docker load -i memgraph-1.5.0-community-docker.tar.gz
 ```
 
 ```
