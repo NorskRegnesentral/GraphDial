@@ -40,5 +40,7 @@ python -m graphdial ./domains/hri_example.yaml
 
 inside the root folder `/GraphDial`. 
 
+To implement your own query modules, see [https://docs.memgraph.com/memgraph/database-functionalities/query-modules/implement-query-modules/](https://docs.memgraph.com/memgraph/database-functionalities/query-modules/implement-query-modules/) 
+
 
 
